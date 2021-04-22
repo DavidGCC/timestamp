@@ -31,15 +31,15 @@ app.get("/api/:date?", (request, response) => {
     let date;
     if (dateInput) {
         dateInput = dateInput.includes("-") ? dateInput : Number(dateInput);
-        date = new Date(dateInput);
+        date = new dayjs(dateInput);
     } else {
-        date = new Date();
+        date = new dayjs();
     }
-    if (Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date.getTime())) {
+    if (date.isValid()) {
         response.json({
             unix: +date,
-            utc: date.toUTCString()
-        });
+            utc: date.toString()
+        })
     } else {
         response.json({
             error: "Invalid Date"
