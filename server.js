@@ -28,22 +28,25 @@ app.get("/api/hello", function (req, res) {
 
 app.get("/api/:date?", (request, response) => {
     let dateInput = request.params.date;
-    let date;
-    if (dateInput) {
-        dateInput = dateInput.includes("-") ? dateInput : Number(dateInput);
-        date = new dayjs(dateInput);
-    } else {
-        date = new dayjs();
-    }
-    if (date.isValid()) {
+    if (/\d{5,}/.test(dateInput)) {
+        dateInput = parseInt(dateInput);
+        const date = dayjs(dateInput);
         response.json({
             unix: +date,
             utc: date.toString()
-        })
+        });
     } else {
-        response.json({
-            error: "Invalid Date"
-        })
+        const date = dayjs(dateInput);
+        if (date.isValid()) {
+            response.json({
+                unix: +date,
+                utc: date.toString()
+            });
+        } else {
+            response.json({
+                error: "Invalid Date"
+            })
+        }
     }
 });
 
