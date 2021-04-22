@@ -5,6 +5,7 @@
 require('dotenv').config();
 var express = require('express');
 var app = express();
+const dateFns = require('date-fns');
 
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
@@ -24,6 +25,21 @@ app.get("/", function (req, res) {
 // your first API endpoint... 
 app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
+});
+
+app.get("/api/:date", (request, response) => {
+    const dateInput = request.params.date.includes("-") ? request.params.date : Number(request.params.date);
+    const date = new Date(dateInput);
+    if (dateFns.isValid(date)) {
+        response.json({
+            unix: dateFns.getUnixTime(date),
+            utc: date.toUTCString()
+        })
+    } else {
+        response.json({
+            error: "Invalid Date"
+        })
+    }
 });
 
 
