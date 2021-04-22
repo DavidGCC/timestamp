@@ -27,9 +27,15 @@ app.get("/api/hello", function (req, res) {
   res.json({greeting: 'hello API'});
 });
 
-app.get("/api/:date", (request, response) => {
-    const dateInput = request.params.date.includes("-") ? request.params.date : Number(request.params.date);
-    const date = new Date(dateInput);
+app.get("/api/:date?", (request, response) => {
+    let dateInput = request.params.date;
+    let date;
+    if (dateInput) {
+        dateInput = dateInput.includes("-") ? dateInput : Number(dateInput);
+        date = new Date(dateInput);
+    } else {
+        date = new Date();
+    }
     if (dateFns.isValid(date)) {
         response.json({
             unix: dateFns.getUnixTime(date),
