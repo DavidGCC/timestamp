@@ -5,7 +5,6 @@
 require('dotenv').config();
 var express = require('express');
 var app = express();
-const dateFns = require('date-fns');
 
 
 // enable CORS (https://en.wikipedia.org/wiki/Cross-origin_resource_sharing)
@@ -36,11 +35,11 @@ app.get("/api/:date?", (request, response) => {
     } else {
         date = new Date();
     }
-    if (dateFns.isValid(date)) {
+    if (Object.prototype.toString.call(date) === "[object Date]" && !isNaN(date.getTime())) {
         response.json({
-            unix: dateFns.getUnixTime(date),
+            unix: +date,
             utc: date.toUTCString()
-        })
+        });
     } else {
         response.json({
             error: "Invalid Date"
